@@ -159,11 +159,11 @@ footer{background:var(--white);border-top:1px solid var(--border);padding:18px 2
   </div>
   <div style="max-width:1440px;margin:0 auto;padding:0 28px;">
     <div class="ag-tabs" id="agTabs">
-      <button class="ag-tab active" onclick="showAgence('global')" id="tab-global">Vue globale <span class="ag-cnt" id="cnt-global">4</span></button>
-      <button class="ag-tab" onclick="showAgence('nancy')"   id="tab-nancy">  Nancy   <span class="ag-cnt" id="cnt-nancy">-</span></button>
-      <button class="ag-tab" onclick="showAgence('metz')"    id="tab-metz">   Metz    <span class="ag-cnt" id="cnt-metz">-</span></button>
-      <button class="ag-tab" onclick="showAgence('reims')"   id="tab-reims">  Reims   <span class="ag-cnt" id="cnt-reims">-</span></button>
-      <button class="ag-tab" onclick="showAgence('belford')" id="tab-belford">Belford <span class="ag-cnt" id="cnt-belford">-</span></button>
+      <button class="ag-tab active" data-ag="global"  id="tab-global">Vue globale <span class="ag-cnt" id="cnt-global">4</span></button>
+      <button class="ag-tab"        data-ag="nancy"   id="tab-nancy">Nancy       <span class="ag-cnt" id="cnt-nancy">-</span></button>
+      <button class="ag-tab"        data-ag="metz"    id="tab-metz">Metz         <span class="ag-cnt" id="cnt-metz">-</span></button>
+      <button class="ag-tab"        data-ag="reims"   id="tab-reims">Reims       <span class="ag-cnt" id="cnt-reims">-</span></button>
+      <button class="ag-tab"        data-ag="belford" id="tab-belford">Belford   <span class="ag-cnt" id="cnt-belford">-</span></button>
     </div>
   </div>
 </header>
@@ -185,8 +185,8 @@ footer{background:var(--white);border-top:1px solid var(--border);padding:18px 2
 </footer>
 
 <script>
-var API_URL = "https://script.google.com/macros/s/AKfycbzjeBY86z85NiGFiClTFdVpslnAETaU-yYZLkrl9PStLpB2XjCpCMaTnkaldB--KjseHw/exec";
-var USE_DEMO = true;
+var API_URL = "https://script.google.com/macros/s/AKfycbxCAxuSpqXBCL_MMYDO8fkFvvAg0jpHPd5HiUwXcddMWSPXiwrhlCjqPtYajjRn0G0AjQ/exec";
+var USE_DEMO = false;
 
 var DEMO = {success:true,agences:{
   nancy:{nom:"Nancy",projets:[
@@ -214,7 +214,16 @@ var DEMO = {success:true,agences:{
 
 var curAg="global", allData=null;
 
-document.addEventListener("DOMContentLoaded",function(){init();setInterval(init,5*60*1000);});
+document.addEventListener("DOMContentLoaded",function(){
+  // Attacher les event listeners sur les onglets (évite problèmes d'apostrophes)
+  document.querySelectorAll(".ag-tab[data-ag]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      showAgence(this.getAttribute("data-ag"));
+    });
+  });
+  init();
+  setInterval(init, 5*60*1000);
+});
 
 async function init(){
   allData=USE_DEMO?DEMO:await api("all");
@@ -264,7 +273,7 @@ function renderGlobal(m){
     var nd=pj.filter(function(p){return p.avancement===0;}).length;
     var moy=tot>0?Math.round(pj.reduce(function(s,p){return s+p.avancement;},0)/tot):0;
     var bc=moy>=80?"var(--green)":moy>=40?"var(--orange)":"var(--red)";
-    h+='<div class="ag-card" onclick="showAgence(''+a.id+'')">';
+    h+='<div class="ag-card" data-ag="'+a.id+'">';
     h+='<div class="ag-ch"><div class="ag-cn">Agence '+a.nom+'</div><div class="ag-ct">'+tot+' projets</div></div>';
     h+='<div class="ag-cb"><div class="ag-cs">';
     h+='<div style="flex:1;text-align:center"><div class="ag-sv" style="color:var(--green)">'+ter+'</div><div class="ag-sl">Termines</div></div>';
@@ -274,6 +283,12 @@ function renderGlobal(m){
     h+='<div class="ag-bp" style="color:'+bc+'">'+moy+'% avancement moyen</div></div></div>';
   });
   h+='</div>';m.innerHTML=h;
+  // Attacher les clics sur les cartes après rendu
+  document.querySelectorAll(".ag-card[data-ag]").forEach(function(card){
+    card.addEventListener("click",function(){
+      showAgence(this.getAttribute("data-ag"));
+    });
+  });
 }
 function renderAg(m,agId){
   var agD=(allData.agences||{})[agId];
@@ -288,9 +303,9 @@ function renderAg(m,agId){
   });
   var h='<div class="sec-head"><span class="sec-title">Agence '+agD.nom+'</span><span class="sec-count">'+pf.length+' / '+pj.length+' projets</span></div>';
   h+='<div class="filters"><span class="fl">Rechercher :</span>';
-  h+='<input class="fi" id="ftx" placeholder="Projet, automaticien..." style="width:200px" oninput="renderAg(document.getElementById('main'),''+agId+'')" value="'+esc(ftx)+'">';
+  h+='<input class="fi" id="ftx" placeholder="Projet, automaticien..." style="width:200px" value="'+esc(ftx)+'">';
   h+='<span class="fl">Etat :</span>';
-  h+='<select class="fi-sel" id="fav" onchange="renderAg(document.getElementById('main'),''+agId+'')">';
+  h+='<select class="fi-sel" id="fav">';
   h+='<option value="tous"'+(fav==="tous"?" selected":"")+'>Tous</option>';
   h+='<option value="ter"'+(fav==="ter"?" selected":"")+'>Termines (100%)</option>';
   h+='<option value="enc"'+(fav==="enc"?" selected":"")+'>En cours</option>';
@@ -325,6 +340,12 @@ function renderAg(m,agId){
   });
   h+='</tbody></table></div></div>';
   m.innerHTML=h;
+  // Attacher filtres après rendu
+  var ftxEl=document.getElementById("ftx");
+  var favEl=document.getElementById("fav");
+  var _agId=agId;
+  if(ftxEl) ftxEl.addEventListener("input",function(){renderAg(document.getElementById("main"),_agId);});
+  if(favEl) favEl.addEventListener("change",function(){renderAg(document.getElementById("main"),_agId);});
 }
 function stBadge(v){
   if(!v||!v.trim())return '<span class="st s-na">-</span>';
