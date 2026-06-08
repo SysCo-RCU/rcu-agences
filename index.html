@@ -72,6 +72,13 @@ header{background:var(--white);border-bottom:1px solid var(--border);
 .tscroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:12px;min-width:1400px;}
 thead{position:sticky;top:68px;z-index:10;}
+/* Colonnes fixes à gauche */
+.col-fix{position:sticky;left:0;background:var(--white);z-index:2;}
+.col-fix2{position:sticky;left:88px;background:var(--white);z-index:2;}
+.col-fix3{position:sticky;left:208px;background:var(--white);z-index:2;box-shadow:2px 0 4px rgba(0,0,0,.06);}
+thead tr.th-c .col-fix,thead tr.th-c .col-fix2,thead tr.th-c .col-fix3{background:var(--navy);z-index:3;}
+thead tr.th-g .col-fix-g{position:sticky;left:0;background:#EEF2FF;z-index:3;}
+tbody tr:hover .col-fix,tbody tr:hover .col-fix2,tbody tr:hover .col-fix3{background:#F0F4FF;}
 thead tr.th-g{background:#EEF2FF;}
 thead tr.th-g th{padding:6px 12px;text-align:center;font-family:var(--f-title);
   font-size:10px;font-weight:700;color:var(--navy);letter-spacing:.5px;
@@ -325,9 +332,9 @@ function renderAg(m,agId){
   h+='<th colspan="8" style="border-right:1px solid #C7D2FE">ETATS</th>';
   h+='<th colspan="6">DATES</th></tr>';
   h+='<tr class="th-c">';
-  h+='<th style="min-width:88px">DATE CMD</th>';
-  h+='<th style="min-width:120px">N° DEG</th>';
-  h+='<th style="min-width:300px">NOM DU PROJET</th>';
+  h+='<th class="col-fix" style="min-width:88px">DATE CMD</th>';
+  h+='<th class="col-fix2" style="min-width:120px">N&deg; DEG</th>';
+  h+='<th class="col-fix3" style="min-width:300px">NOM DU PROJET</th>';
   h+='<th style="min-width:130px">AUTOMATICIEN</th>';
   h+='<th style="min-width:120px">AVANCEMENT</th>';
   h+='<th style="min-width:75px">REC. AF</th>';
@@ -348,9 +355,10 @@ function renderAg(m,agId){
   pf.forEach(function(p){
     var av=p.avancement||0;
     var ac=av>=100?"var(--green)":av>=50?"var(--orange)":"var(--red)";
-    h+='<tr><td class="td-d">'+esc(p.dateCommande||"-")+'</td>';
-    h+='<td class="td-n">'+esc(p.numero||"-")+'</td>';
-    h+='<td class="td-p"><span title="'+esc(p.nomProjet)+'">'+esc(p.nomProjet)+'</span></td>';
+    h+='<tr>';
+    h+='<td class="td-d col-fix">'+esc(p.dateCommande||"-")+'</td>';
+    h+='<td class="td-n col-fix2">'+esc(p.numero||"-")+'</td>';
+    h+='<td class="td-p col-fix3"><span title="'+esc(p.nomProjet)+'">'+esc(p.nomProjet)+'</span></td>';
     h+='<td><span class="tp" title="'+esc(p.automaticien)+'">'+esc(nomCourt(p.automaticien))+'</span></td>';
     h+='<td><div class="av-c"><div class="av-t"><div class="av-f" style="width:'+av+'%;background:'+ac+'"></div></div><span class="av-n" style="color:'+ac+'">'+av+'%</span></div></td>';
     [p.receptionAF,p.etatMateriaux,p.etatProgramme,p.gtc,p.transmetteur,p.crt,p.miseEnService,p.doe].forEach(function(v){
