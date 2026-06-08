@@ -70,12 +70,12 @@ header{background:var(--white);border-bottom:1px solid var(--border);
 .table-wrap{background:var(--white);border:1px solid var(--border);
   border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
 .tscroll{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:12px;min-width:1400px;}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:1200px;}
 thead{position:sticky;top:68px;z-index:10;}
 /* Colonnes fixes à gauche */
 .col-fix{position:sticky;left:0;background:var(--white);z-index:2;}
-.col-fix2{position:sticky;left:88px;background:var(--white);z-index:2;}
-.col-fix3{position:sticky;left:208px;background:var(--white);z-index:2;box-shadow:2px 0 4px rgba(0,0,0,.06);}
+.col-fix2{position:sticky;left:80px;background:var(--white);z-index:2;}
+.col-fix3{position:sticky;left:190px;background:var(--white);z-index:2;box-shadow:2px 0 4px rgba(0,0,0,.06);}
 thead tr.th-c .col-fix,thead tr.th-c .col-fix2,thead tr.th-c .col-fix3{background:var(--navy);z-index:3;}
 thead tr.th-g .col-fix-g{position:sticky;left:0;background:#EEF2FF;z-index:3;}
 tbody tr:hover .col-fix,tbody tr:hover .col-fix2,tbody tr:hover .col-fix3{background:#F0F4FF;}
@@ -256,8 +256,10 @@ function renderKPIs(){
   var tot=0,ter=0,enc=0,s=0,n=0;
   ids.forEach(function(id){
     ((ag[id]&&ag[id].projets)||[]).forEach(function(p){
-      tot++;s+=p.avancement;n++;
-      if(p.avancement>=100)ter++;else if(p.avancement>0)enc++;
+      var a=p.avancement||0;
+      var av=(a>0&&a<=1)?Math.round(a*100):Math.round(a);
+      tot++;s+=av;n++;
+      if(av>=100)ter++;else if(av>0)enc++;
     });
   });
   document.getElementById("kpiP").textContent=tot;
@@ -281,10 +283,15 @@ function renderGlobal(m){
   var h='<div class="sec-head"><span class="sec-title">Vue globale des 5 agences</span></div><div class="ag-cards stagger">';
   IDS.forEach(function(a){
     var pj=(ag[a.id]&&ag[a.id].projets)||[];
-    var tot=pj.length,ter=pj.filter(function(p){return p.avancement>=100;}).length;
-    var enc=pj.filter(function(p){return p.avancement>0&&p.avancement<100;}).length;
-    var nd=pj.filter(function(p){return p.avancement===0;}).length;
-    var moy=tot>0?Math.round(pj.reduce(function(s,p){return s+p.avancement;},0)/tot):0;
+    var tot=pj.length;
+    function _av(p){var a=p.avancement||0;return(a>0&&a<=1)?Math.round(a*100):Math.round(a);}
+    var ter=pj.filter(function(p){return _av(p)>=100;}).length;
+    var enc=pj.filter(function(p){return _av(p)>0&&_av(p)<100;}).length;
+    var nd=pj.filter(function(p){return _av(p)===0;}).length;
+    var moy=tot>0?Math.round(pj.reduce(function(s,p){
+      var a=p.avancement||0;
+      return s+((a>0&&a<=1)?Math.round(a*100):Math.round(a));
+    },0)/tot):0;
     var bc=moy>=80?"var(--green)":moy>=40?"var(--orange)":"var(--red)";
     h+='<div class="ag-card" data-ag="'+a.id+'">';
     h+='<div class="ag-ch"><div class="ag-cn">Agence '+a.nom+'</div><div class="ag-ct">'+tot+' projets</div></div>';
@@ -353,7 +360,10 @@ function renderAg(m,agId){
   h+='<th style="min-width:82px">REA FIN</th>';
   h+='</tr></thead><tbody>';
   pf.forEach(function(p){
-    var av=p.avancement||0;
+    var avRaw=p.avancement||0;
+    // Double sécurité : si valeur décimale (0.95) → convertir en %
+    var av = (avRaw > 0 && avRaw <= 1) ? Math.round(avRaw*100) : Math.round(avRaw);
+    if(av > 100) av = 100;
     var ac=av>=100?"var(--green)":av>=50?"var(--orange)":"var(--red)";
     h+='<tr>';
     h+='<td class="td-d col-fix">'+esc(p.dateCommande||"-")+'</td>';
