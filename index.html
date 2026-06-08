@@ -175,7 +175,7 @@ footer{background:var(--white);border-top:1px solid var(--border);padding:18px 2
       <button class="ag-tab"        data-ag="nancy"   id="tab-nancy">Nancy       <span class="ag-cnt" id="cnt-nancy">-</span></button>
       <button class="ag-tab"        data-ag="metz"    id="tab-metz">Metz         <span class="ag-cnt" id="cnt-metz">-</span></button>
       <button class="ag-tab"        data-ag="reims"   id="tab-reims">Reims       <span class="ag-cnt" id="cnt-reims">-</span></button>
-      <button class="ag-tab"        data-ag="belford" id="tab-belford">Belford   <span class="ag-cnt" id="cnt-belford">-</span></button>
+      <button class="ag-tab"        data-ag="belford" id="tab-belford">Belfort  <span class="ag-cnt" id="cnt-belford">-</span></button>
       <button class="ag-tab"        data-ag="esse"    id="tab-esse">ESSE         <span class="ag-cnt" id="cnt-esse">-</span></button>
     </div>
   </div>
@@ -219,7 +219,7 @@ var DEMO = {success:true,agences:{
     {dateCommande:"08/02/2026",numero:"C26005678-2",nomProjet:"SC - TLG sous-station ESTIA Reims",automaticien:"Olivier Xolin",avancement:80,receptionAF:"",etatMateriaux:"Livrer",etatProgramme:"En cours",gtc:"",transmetteur:"",crt:"",miseEnService:"",doe:"",origDeb:"",origFin:"",prevDeb:"10/02/2026",prevFin:"10/04/2026",reaDeb:"",reaFin:"",remarques:""},
     {dateCommande:"15/03/2026",numero:"C26009012-1",nomProjet:"SC - Interconnexion reseau chaleur Bezannes",automaticien:"Baptiste Bracke",avancement:100,receptionAF:"",etatMateriaux:"Livrer",etatProgramme:"Livrer",gtc:"Livrer",transmetteur:"",crt:"",miseEnService:"",doe:"",origDeb:"",origFin:"",prevDeb:"15/03/2026",prevFin:"30/04/2026",reaDeb:"15/03/2026",reaFin:"25/04/2026",remarques:""}
   ]},
-  belford:{nom:"Belford",projets:[
+  belford:{nom:"Belfort",projets:[
     {dateCommande:"05/02/2026",numero:"C26011111-1",nomProjet:"SC - Supervision chaufferie Belfort Centre",automaticien:"Olivier Rolland",avancement:20,receptionAF:"",etatMateriaux:"",etatProgramme:"",gtc:"",transmetteur:"",crt:"",miseEnService:"",doe:"",origDeb:"",origFin:"",prevDeb:"01/03/2026",prevFin:"30/06/2026",reaDeb:"",reaFin:"",remarques:""},
     {dateCommande:"28/02/2026",numero:"C26022222-1",nomProjet:"SC - TLG reseau Montbeliard PAC geothermie",automaticien:"Mohamed Amine Touati",avancement:0,receptionAF:"",etatMateriaux:"",etatProgramme:"",gtc:"",transmetteur:"",crt:"",miseEnService:"",doe:"",origDeb:"",origFin:"",prevDeb:"15/04/2026",prevFin:"15/08/2026",reaDeb:"",reaFin:"",remarques:""}
   ]}
@@ -279,7 +279,7 @@ function renderContent(){
 }
 function renderGlobal(m){
   var ag=allData.agences||{};
-  var IDS=[{id:"nancy",nom:"Nancy"},{id:"metz",nom:"Metz"},{id:"reims",nom:"Reims"},{id:"belford",nom:"Belford"},{id:"esse",nom:"ESSE"}];
+  var IDS=[{id:"nancy",nom:"Nancy"},{id:"metz",nom:"Metz"},{id:"reims",nom:"Reims"},{id:"belford",nom:"Belfort"},{id:"esse",nom:"ESSE"}];
   var h='<div class="sec-head"><span class="sec-title">Vue globale des 5 agences</span></div><div class="ag-cards stagger">';
   IDS.forEach(function(a){
     var pj=(ag[a.id]&&ag[a.id].projets)||[];
