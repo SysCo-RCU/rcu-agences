@@ -278,7 +278,7 @@ function renderContent(){
 function renderGlobal(m){
   var ag=allData.agences||{};
   var IDS=[{id:"nancy",nom:"Nancy"},{id:"metz",nom:"Metz"},{id:"reims",nom:"Reims"},{id:"belford",nom:"Belford"},{id:"esse",nom:"ESSE"}];
-  var h='<div class="sec-head"><span class="sec-title">Vue globale des 4 agences</span></div><div class="ag-cards stagger">';
+  var h='<div class="sec-head"><span class="sec-title">Vue globale des 5 agences</span></div><div class="ag-cards stagger">';
   IDS.forEach(function(a){
     var pj=(ag[a.id]&&ag[a.id].projets)||[];
     var tot=pj.length,ter=pj.filter(function(p){return p.avancement>=100;}).length;
@@ -379,18 +379,50 @@ function renderAg(m,agId){
   if(favEl) favEl.addEventListener("change",function(){renderAg(document.getElementById("main"),_agId);});
 }
 function stBadge(v){
-  if(!v||!String(v).trim()||String(v).trim()==="-")return '<span class="st s-na">-</span>';
+  if(!v||!String(v).trim()||String(v).trim()==="-"||String(v).trim()==="")
+    return '<span class="st s-na">-</span>';
   var s=String(v).trim();
   var l=s.toLowerCase();
-  if(l==="livrer"||l==="livre"||l==="livré"||l==="ok"||l==="oui"||l==="valide"||l==="validé"||l==="recu"||l==="reçu")
+
+  // Validé / OK / Livré / Reçu
+  if(l==="livrer"||l==="livre"||l==="livré"||l==="ok"||l==="oui"
+    ||l==="valide"||l==="validé"||l==="recu"||l==="reçu"||l==="reçu"
+    ||l==="validée")
     return '<span class="st s-ok">'+esc(s)+'</span>';
-  if(l==="fait"||l==="done"||l==="termine"||l==="terminé")
+
+  // Fait / Terminé
+  if(l==="fait"||l==="done"||l==="termine"||l==="terminé"||l==="fini")
     return '<span class="st s-fa">'+esc(s)+'</span>';
-  if(l==="en cours")return '<span class="st s-en">En cours</span>';
-  if(l==="blocage"||l==="bloque"||l==="bloqué")return '<span class="st s-bl">'+esc(s)+'</span>';
-  if(l==="non"||l==="ko"||l==="refuse"||l==="refusé")return '<span class="st s-ko">'+esc(s)+'</span>';
-  if(l.indexOf("recu")>=0||l.indexOf("reçu")>=0||l.indexOf("livr")>=0)
+
+  // En cours / En attente
+  if(l==="en cours"||l==="en attente"||l==="commander"||l==="commande")
+    return '<span class="st s-en">'+esc(s)+'</span>';
+
+  // NC / Non concerné
+  if(l==="nc"||l==="non concerné"||l==="non concerne"||l==="n/a"||l==="na")
+    return '<span class="st s-na">'+esc(s)+'</span>';
+
+  // Atteinte
+  if(l.indexOf("atteinte")>=0||l.indexOf("attente")>=0)
+    return '<span class="st s-en">'+esc(s)+'</span>';
+
+  // Envoyer
+  if(l==="envoyer"||l==="envoye"||l==="envoyé")
+    return '<span class="st s-pr">'+esc(s)+'</span>';
+
+  // Blocage
+  if(l==="blocage"||l==="bloque"||l==="bloqué")
+    return '<span class="st s-bl">'+esc(s)+'</span>';
+
+  // Non / Ko / Refusé
+  if(l==="non"||l==="ko"||l==="refuse"||l==="refusé")
+    return '<span class="st s-ko">'+esc(s)+'</span>';
+
+  // Contient "livr" ou "recu"
+  if(l.indexOf("livr")>=0||l.indexOf("recu")>=0||l.indexOf("reçu")>=0)
     return '<span class="st s-re">'+esc(s)+'</span>';
+
+  // Autre → badge gris-orange
   return '<span class="st s-pr">'+esc(s)+'</span>';
 }
 function initiales(n){
