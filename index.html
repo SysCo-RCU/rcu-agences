@@ -175,7 +175,7 @@ footer{background:var(--white);border-top:1px solid var(--border);padding:18px 2
       <button class="ag-tab"        data-ag="nancy"   id="tab-nancy">Nancy       <span class="ag-cnt" id="cnt-nancy">-</span></button>
       <button class="ag-tab"        data-ag="metz"    id="tab-metz">Metz         <span class="ag-cnt" id="cnt-metz">-</span></button>
       <button class="ag-tab"        data-ag="reims"   id="tab-reims">Reims       <span class="ag-cnt" id="cnt-reims">-</span></button>
-      <button class="ag-tab"        data-ag="belford" id="tab-belford">Belfort  <span class="ag-cnt" id="cnt-belford">-</span></button>
+      <button class="ag-tab"        data-ag="belfort" id="tab-belfort">Belfort  <span class="ag-cnt" id="cnt-belfort">-</span></button>
       <button class="ag-tab"        data-ag="esse"    id="tab-esse">ESSE         <span class="ag-cnt" id="cnt-esse">-</span></button>
     </div>
   </div>
@@ -245,7 +245,7 @@ async function init(){
 }
 function updCounts(){
   var ag=allData.agences||{};
-  ["nancy","metz","reims","belford","esse"].forEach(function(id){
+  ["nancy","metz","reims","belfort","esse"].forEach(function(id){
     var el=document.getElementById("cnt-"+id);
     if(el)el.textContent=(ag[id]&&ag[id].projets)?ag[id].projets.length:"0";
   });
@@ -279,7 +279,7 @@ function renderContent(){
 }
 function renderGlobal(m){
   var ag=allData.agences||{};
-  var IDS=[{id:"nancy",nom:"Nancy"},{id:"metz",nom:"Metz"},{id:"reims",nom:"Reims"},{id:"belford",nom:"Belfort"},{id:"esse",nom:"ESSE"}];
+  var IDS=[{id:"nancy",nom:"Nancy"},{id:"metz",nom:"Metz"},{id:"reims",nom:"Reims"},{id:"belfort",nom:"Belfort"},{id:"esse",nom:"ESSE"}];
   var h='<div class="sec-head"><span class="sec-title">Vue globale des 5 agences</span></div><div class="ag-cards stagger">';
   IDS.forEach(function(a){
     var pj=(ag[a.id]&&ag[a.id].projets)||[];
